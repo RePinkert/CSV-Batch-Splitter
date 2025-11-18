@@ -136,7 +136,13 @@ def main():
         print(f"今天的上限 {MAX_EMAILS_PER_DAY} 批已经用完，不再生成新文件。")
         return
 
-    # 4. 计算本次要切多少条（支持循环切分）
+    # 4. 检查CSV文件大小是否合理
+    if total <= MAX_RECIPIENTS_PER_EMAIL:
+        print(f"❌ 错误：CSV文件只有 {total} 条记录，不大于要求的每批 {MAX_RECIPIENTS_PER_EMAIL} 条")
+        print(f"   请增大CSV文件内容，或减小配置文件中的 MAX_RECIPIENTS_PER_EMAIL")
+        return
+    
+    # 5. 计算本次要切多少条（支持循环切分）
     remaining = total - current_index
     
     if remaining >= MAX_RECIPIENTS_PER_EMAIL:
@@ -177,7 +183,7 @@ def main():
         second_end_excel = needed + (1 if HAS_HEADER else 0)
         print(f"本次将切分记录区间: Excel行 {current_index + 1 + (1 if HAS_HEADER else 0)} ~ {first_end_excel} + Excel行 {1 + (1 if HAS_HEADER else 0)} ~ {second_end_excel}, 共 {batch_size} 条")
 
-    # 5. 生成 Excel 文件
+    # 6. 生成 Excel 文件
     batch_no_today = today_batches + 1
     filename = f"mail_batch_{today}_b{batch_no_today}.xlsx"
 
@@ -189,7 +195,7 @@ def main():
     df.to_excel(filename, index=False)
     print(f"已生成文件: {filename}")
 
-    # 6. 写日志 & 更新进度
+    # 7. 写日志 & 更新进度
     if remaining >= MAX_RECIPIENTS_PER_EMAIL:
         # 正常切分情况
         excel_log_start = current_index + (1 if HAS_HEADER else 0)
