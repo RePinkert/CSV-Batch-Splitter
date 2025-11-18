@@ -96,17 +96,23 @@ def init_log_file_if_needed():
 
 
 def get_today_batch_count():
-    """统计今天已经生成了多少批（从日志里看）"""
+    """统计今天已经生成了多少个Excel文件（从日志里看）"""
     if not os.path.exists(LOG_FILE):
         return 0
     today = datetime.now().strftime("%Y-%m-%d")
-    count = 0
+    batch_numbers = set()  # 使用set去重
+    
     with open(LOG_FILE, newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
             if row.get("date") == today:
-                count += 1
-    return count
+                batch_no = row.get("batch_no", "")
+                # 提取批次号主干（去掉"-1", "-2"后缀）
+                base_batch_no = batch_no.split('-')[0]
+                if base_batch_no:
+                    batch_numbers.add(base_batch_no)
+    
+    return len(batch_numbers)
 
 
 def append_log(date_str, batch_no, count, start_idx, end_idx):
