@@ -17,16 +17,26 @@ HAS_HEADER = True            # 主 CSV 是否有表头
 
 
 def find_csv_file():
-    """自动查找CSV文件"""
+    """自动查找CSV文件 - 优先使用ue.csv"""
     # 首先尝试配置的路径
     if os.path.exists(CSV_PATH):
         return CSV_PATH
     
     # 如果配置的文件不存在，尝试当前目录下的CSV文件
     csv_files = [f for f in os.listdir('.') if f.lower().endswith('.csv')]
+    
+    # 优先查找ue.csv（源数据文件）
+    ue_csv_candidates = [f for f in csv_files if f.lower() in ['ue.csv', 'ue.CSV']]
+    if ue_csv_candidates:
+        print(f"✅ 找到源数据文件: {ue_csv_candidates[0]}")
+        return ue_csv_candidates[0]
+    
+    # 如果没有ue.csv，提供清晰的错误信息
     if csv_files:
-        print(f"⚠️  配置文件 '{CSV_PATH}' 不存在，已自动找到CSV文件: {csv_files[0]}")
-        return csv_files[0]
+        print(f"❌ 错误：未找到源数据文件 'ue.csv'")
+        print(f"   当前目录发现的CSV文件: {csv_files}")
+        print(f"   请将源数据文件重命名为 'ue.csv'，或删除其他CSV文件")
+        return None
     
     return None
 
