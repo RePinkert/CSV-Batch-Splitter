@@ -32,7 +32,7 @@ pip install pandas openpyxl
 ```
 
 ### 2️⃣ 放置 CSV 文件
-将你的待处理csv文件（例如 `ue.csv`）放在和 `test.py` 同一目录下即可。
+将你的待处理csv文件（例如 `ue.csv`）放在和 `csv_batch_splitter.py` 同一目录下即可。
 
 示例格式：
 ```csv
@@ -44,15 +44,18 @@ bbb@example.com
 
 ### 3️⃣ 执行脚本
 ```bash
-python test.py
+python csv_batch_splitter.py
 ```
+**首次运行后会自动生成**：
+- `state.json` - 处理进度记录文件
+- `send_log.csv` - 批次生成日志文件
 
 运行后会生成：
 ```
 mail_batch_2025-01-01_b1.xlsx
 ```
 
-## ⚙️ 配置说明（来自 test.py）
+## ⚙️ 配置说明（来自 csv_batch_splitter.py）
 
 ```python
 MAX_RECIPIENTS_PER_EMAIL = 200   # 每批 200 人
@@ -62,6 +65,8 @@ CSV_PATH = "ue.csv"              # 未找到时自动搜索 *.csv
 ```
 
 ## 🔁 进度管理（state.json）
+
+> **注意**：此文件在首次运行程序后自动生成
 
 示例：
 ```json
@@ -76,6 +81,8 @@ CSV_PATH = "ue.csv"              # 未找到时自动搜索 *.csv
 - 不需要人工修改
 
 ## 📝 日志格式（send_log.csv）
+
+> **注意**：此文件在首次运行程序后自动生成
 
 示例：
 ```csv
